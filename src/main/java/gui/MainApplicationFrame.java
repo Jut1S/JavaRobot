@@ -89,11 +89,7 @@ public class MainApplicationFrame extends JFrame
 //        return menuBar;
 //    }
 
-    /**
-     * Генерирует строку меню приложения.
-     *
-     * @return Строка меню приложения, содержащая пункты "Режим отображения", "Тесты" и "Файл".
-     */
+
     private JMenuBar generateMenuBar()
     {
         JMenuBar menuBar = new JMenuBar();
@@ -134,42 +130,12 @@ public class MainApplicationFrame extends JFrame
             testMenu.add(addLogMessageItem);
         }
 
-        // выход
-        JMenuItem exitItem = new JMenuItem("Выход", KeyEvent.VK_X);
-        exitItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, InputEvent.ALT_DOWN_MASK));
-        exitItem.addActionListener((event) -> exitApplication());
 
-        JMenu fileMenu = new JMenu("Файл");
-        fileMenu.setMnemonic(KeyEvent.VK_F);
-        fileMenu.add(exitItem);
-
-        menuBar.add(fileMenu);
         menuBar.add(lookAndFeelMenu);
         menuBar.add(testMenu);
         return menuBar;
     }
 
-    /**
-     * Метод для выхода из приложения с подтверждением.
-     * Отображает диалоговое окно с вопросом о подтверждении выхода.
-     * Если пользователь подтверждает выход, приложение завершает свою работу.
-     */
-    private void exitApplication() {
-        Object[] options = {"Да", "Нет"};
-        int confirmed = JOptionPane.showOptionDialog(
-                this,
-                "Вы уверены, что хотите выйти?",
-                "Подтверждение выхода",
-                JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE,
-                null,
-                options,
-                options[1]);
-
-        if (confirmed == JOptionPane.YES_OPTION) {
-            System.exit(0);
-        }
-    }
     
     private void setLookAndFeel(String className)
     {
