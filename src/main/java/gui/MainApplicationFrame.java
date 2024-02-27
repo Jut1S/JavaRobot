@@ -54,6 +54,13 @@ public class MainApplicationFrame extends JFrame {
         frame.setVisible(true);
     }
 
+    /**
+     * Генерирует строку меню приложения.
+     * Создает и настраивает пункты меню "Режим отображения", "Тесты" и "Меню",
+     * добавляя к ним соответствующие подпункты и обработчики событий.
+     *
+     * @return Строка меню приложения с сгенерированными пунктами меню.
+     */
     private JMenuBar generateMenuBar() {
         JMenuBar menuBar = new JMenuBar();
         addFileMenu(menuBar);
@@ -62,6 +69,13 @@ public class MainApplicationFrame extends JFrame {
         return menuBar;
     }
 
+    /**
+     * Метод для добавления пункта "Меню" с пунктом "Выход".
+     * Добавляет в главное меню приложения пункт "Меню" с пунктом "Выход",
+     * который позволяет пользователю выйти из приложения с подтверждением.
+     *
+     * @return Строка меню приложения с добавленным пунктом "Файл".
+     */
     private void addFileMenu(JMenuBar menuBar) {
         JMenu fileMenu = new JMenu("Меню");
         fileMenu.setMnemonic(KeyEvent.VK_F);
@@ -113,6 +127,11 @@ public class MainApplicationFrame extends JFrame {
         menuBar.add(testMenu);
     }
 
+    /**
+     * Метод для завершения работы приложения с подтверждением.
+     * Отображает диалоговое окно с вопросом о подтверждении выхода.
+     * Если пользователь подтверждает выход, приложение завершает свою работу.
+     */
     private void exitApplication() {
         Object[] options = {"Да", "Нет"};
         int confirmed = JOptionPane.showOptionDialog(
