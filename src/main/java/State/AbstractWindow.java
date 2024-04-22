@@ -1,4 +1,4 @@
-package gui;
+package State;
 
 import java.util.prefs.Preferences;
 import javax.swing.JInternalFrame;
