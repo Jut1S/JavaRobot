@@ -6,18 +6,17 @@ import java.awt.TextArea;
 import javax.swing.JPanel;
 
 import State.AbstractWindow;
-import log.BoundedLogWindowSource;
 import log.LogChangeListener;
 import log.LogEntry;
-
+import log.LogWindowSource;
 
 
 public class LogWindow extends AbstractWindow implements LogChangeListener
 {
-    private final BoundedLogWindowSource m_logSource;
+    private final LogWindowSource m_logSource;
     private final TextArea m_logContent;
 
-    public LogWindow(BoundedLogWindowSource logSource) {
+    public LogWindow(LogWindowSource logSource) {
         super();
 
         setTitle("Окно логов");
