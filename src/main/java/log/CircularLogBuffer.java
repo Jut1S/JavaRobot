@@ -47,8 +47,9 @@ public class CircularLogBuffer <T> {
     public void append(LogEntry entry) {
         lock.lock();
         try {
-            if (size == buffer.length){
-                start = (start + 1 ) % buffer.length;
+            if (size == buffer.length) {
+                start = (start + 1) % buffer.length;
+                size--; // Уменьшаем размер буфера при добавлении нового элемента при полном буфере
             }
             buffer[end] = (T) entry;
             end = (end + 1) % buffer.length;
