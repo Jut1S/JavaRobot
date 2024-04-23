@@ -87,6 +87,11 @@ public class CircularLogBuffer <T> {
         }
     }
 
+    /**
+     * Возвращает текущий размер буфера.
+     *
+     * @return текущий размер буфера
+     */
     public int size() {
         lock.lock();
         try {
@@ -97,10 +102,11 @@ public class CircularLogBuffer <T> {
     }
 
 
+
     /**
-     * Возвращает текущий размер буфера.
+     * Возвращает список, содержащий все элементы буфера.
      *
-     * @return текущий размер буфера
+     * @return список элементов буфера
      */
     public List<LogEntry> all() {
         lock.lock();
