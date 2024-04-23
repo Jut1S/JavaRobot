@@ -3,6 +3,10 @@ package State;
 import java.util.prefs.Preferences;
 import javax.swing.JInternalFrame;
 
+
+/**
+ * Абстрактный класс, представляющий оконное приложение, которое может сохранять и загружать свое состояние.
+ */
 public abstract class AbstractWindow extends JInternalFrame implements WithState {
 
     private final String prefixWindowPreferences;
@@ -11,6 +15,9 @@ public abstract class AbstractWindow extends JInternalFrame implements WithState
     private final String prefixWindowSizeWidth;
     private final String prefixWindowSizeHeight;
 
+    /**
+     * Конструктор класса. Инициализирует префиксы для имен ключей.
+     */
     public AbstractWindow() {
         super();
         this.prefixWindowPreferences = formatTitle("window preferences");
@@ -20,15 +27,32 @@ public abstract class AbstractWindow extends JInternalFrame implements WithState
         this.prefixWindowSizeHeight = formatTitle("size height");
     }
 
-        private Preferences getPreferences() {
-        return Preferences.userRoot().node(prefixWindowPreferences);
-    }
+    /**
+     * Получает объект Preferences для сохранения и загрузки настроек окна.
+     *
+     * @return объект Preferences
+     */
+    private Preferences getPreferences() {
+    return Preferences.userRoot().node(prefixWindowPreferences);
+}
 
+
+
+    /**
+     * Форматирует заголовок, преобразуя его в верхний регистр и заменяя пробелы на символ подчеркивания.
+     *
+     * @param title исходный заголовок
+     * @return отформатированный заголовок
+     */
     private String formatTitle(String title) {
         String cased = title.toUpperCase();
         return cased.replaceAll(" +", "_");
     }
 
+
+    /**
+     * Сохраняет текущее состояние окна в объекте Preferences.
+     */
     @Override
     public void saveWindow() {
         Preferences preferences = getPreferences();
@@ -41,6 +65,10 @@ public abstract class AbstractWindow extends JInternalFrame implements WithState
         preferences.putInt(prefixWindowSizeHeight + title, getHeight());
     }
 
+
+    /**
+     * Загружает состояние окна из объекта Preferences и восстанавливает его.
+     */
     @Override
     public void loadWindow() {
         Preferences preferences = getPreferences();
