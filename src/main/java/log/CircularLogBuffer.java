@@ -47,15 +47,13 @@ public class CircularLogBuffer <T> {
     public void append(LogEntry entry) {
         lock.lock();
         try {
-            while (size == buffer.length) {
-                notFull.await();
+            if (size == buffer.length){
+                start = (start + 1 ) % buffer.length;
             }
             buffer[end] = (T) entry;
             end = (end + 1) % buffer.length;
             size++;
             notEmpty.signal();
-        } catch (InterruptedException e) {
-            //nothing
         } finally {
             lock.unlock();
         }
