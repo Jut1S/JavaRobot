@@ -1,12 +1,15 @@
 package gui;
 
 import java.awt.BorderLayout;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.ResourceBundle;
 import javax.swing.JPanel;
 
 import State.AbstractWindow;
 import model.RobotsLogic;
 
-public class GameWindow extends AbstractWindow
+public class GameWindow extends AbstractWindow implements PropertyChangeListener
 {
 
     private final RobotsLogic logic;
@@ -36,5 +39,13 @@ public class GameWindow extends AbstractWindow
         super.dispose();
 
         logic.stopTimer();
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        if("changeLocale".equals(evt.getPropertyName())){
+            ResourceBundle bundle = (ResourceBundle)evt.getNewValue();
+            setTitle(bundle.getString("NewGameWindow"));
+        }
     }
 }

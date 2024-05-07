@@ -2,7 +2,11 @@ package gui;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+import java.net.ResponseCache;
 import java.util.Locale;
+import java.util.Properties;
 import java.util.ResourceBundle;
 import javax.swing.*;
 
@@ -20,17 +24,20 @@ public class MainApplicationFrame extends JFrame {
     /**
      * Текущая локаль для локализации сообщений.
      */
-    private Locale currentLocale = new Locale("ru", "RU");
+    private Locale Locale = new Locale("en");
+
 
     /**
      * Ресурсы для локализации сообщений.
      */
-    private ResourceBundle messages = ResourceBundle.getBundle("resources", currentLocale);
+    private ResourceBundle messages = ResourceBundle.getBundle("resources", Locale);
 
     /**
      * Панель рабочего стола, на которой отображаются внутренние окна.
      */
     private JDesktopPane desktopPane;
+
+    private PropertyChangeSupport support = new PropertyChangeSupport(this);
 
     /**
      * Конструктор главного окна приложения.
@@ -61,6 +68,8 @@ public class MainApplicationFrame extends JFrame {
                 exitApplication();
             }
         });
+
+
     }
 
     /**
@@ -72,6 +81,7 @@ public class MainApplicationFrame extends JFrame {
         var logic = new RobotsLogic();
 
         // Добавляем окна на панель рабочего стола
+
         addWindow(createLogWindow(), 150, 350);
         addWindow(new GameWindow(logic), 400, 400);
         addWindow(new RobotInfo(logic), 150, 350);
@@ -106,6 +116,8 @@ public class MainApplicationFrame extends JFrame {
     protected void addWindow(JInternalFrame frame, int width, int height) {
         desktopPane.add(frame);
         frame.setSize(width, height);
+        if(frame instanceof PropertyChangeListener propertyChangeListener)
+            addPropertyChangeListener(propertyChangeListener);
         frame.setVisible(true);
     }
 
@@ -119,6 +131,7 @@ public class MainApplicationFrame extends JFrame {
         menuBar.add(createFileMenu());
         menuBar.add(createLookAndFeelMenu());
         menuBar.add(createTestMenu());
+        menuBar.add(createLanguageMenu());
 
         return menuBar;
     }
@@ -215,6 +228,79 @@ public class MainApplicationFrame extends JFrame {
         return testMenu;
     }
 
+    private JMenu createLanguageMenu() {
+        JMenu languageMenu = new JMenu(messages.getString("Language"));
+        languageMenu.setMnemonic(KeyEvent.VK_T);
+
+        JMenuItem addLanguageRussian = new JMenuItem(messages.getString("Russian"));
+
+        JMenuItem addLanguageEnglish = new JMenuItem(messages.getString("Translit"));
+
+        addLanguageRussian.addActionListener((event) -> {
+            changeLocale(new Locale("ru", "RU"));
+        });
+
+
+
+        addLanguageEnglish.addActionListener((event) -> {
+            changeLocale(Locale.ENGLISH);
+        });
+
+        languageMenu.add(addLanguageRussian);
+
+        languageMenu.add(addLanguageEnglish);
+
+        return languageMenu;
+    }
+
+
+    private void changeLocale(Locale locale){
+        // Устанавливаем новую локаль
+        Locale = locale;
+
+        // Загружаем ресурсы для новой локали
+        messages = ResourceBundle.getBundle("resources", locale);
+
+        // Обновляем все текстовые элементы интерфейса
+        updateUIComponents(messages);
+    }
+
+    private void updateUIComponents(ResourceBundle bundle) {
+        support.firePropertyChange("changeLocale", null, bundle);
+
+        JMenuBar jMenuBar = getJMenuBar();
+        {
+            JMenu menuItem = jMenuBar.getMenu(0);
+            menuItem.setText(bundle.getString("Menu"));
+            menuItem.getItem(0).setText(bundle.getString("NewGameWindow"));
+            menuItem.getItem(1).setText(bundle.getString("LogsWindow"));
+            menuItem.getItem(2).setText(bundle.getString("Coordinates"));
+            menuItem.getItem(3).setText(bundle.getString("Exit"));
+
+
+        }
+
+        {
+            JMenu menuItem = jMenuBar.getMenu(1);
+            menuItem.setText(bundle.getString("DisplayMode"));
+            menuItem.getItem(0).setText(bundle.getString("UniversalScheme"));
+            menuItem.getItem(1).setText(bundle.getString("SystemDiagram"));
+
+        }
+        {
+            JMenu menuItem = jMenuBar.getMenu(2);
+            menuItem.setText(bundle.getString("Tests"));
+            menuItem.getItem(0).setText(bundle.getString("MessageLog"));
+        }
+        {
+            JMenu menuItem = jMenuBar.getMenu(3);
+            menuItem.setText(bundle.getString("Language"));
+            menuItem.getItem(0).setText(bundle.getString("Russian"));
+            menuItem.getItem(1).setText(bundle.getString("Translit"));
+        }
+    }
+
+
     /**
      * Устанавливает внешний вид.
      * @param className Название класса внешнего вида.
@@ -258,6 +344,7 @@ public class MainApplicationFrame extends JFrame {
      */
     private JMenuItem exit() {
         JMenuItem exitMenuItem = new JMenuItem(messages.getString("Exit"));
+
         exitMenuItem.setMnemonic(KeyEvent.VK_Q);
         exitMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, ActionEvent.ALT_MASK));
         exitMenuItem.addActionListener((event) -> {
@@ -265,5 +352,10 @@ public class MainApplicationFrame extends JFrame {
         });
         return exitMenuItem;
     }
+
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        support.addPropertyChangeListener(listener);
+    }
+
 
 }
