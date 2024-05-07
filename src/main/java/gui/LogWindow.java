@@ -3,6 +3,10 @@ package gui;
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.TextArea;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.Locale;
+import java.util.ResourceBundle;
 import javax.swing.JPanel;
 
 import State.AbstractWindow;
@@ -11,7 +15,7 @@ import log.LogEntry;
 import log.LogWindowSource;
 
 
-public class LogWindow extends AbstractWindow implements LogChangeListener
+public class LogWindow extends AbstractWindow implements LogChangeListener, PropertyChangeListener
 {
     private final LogWindowSource m_logSource;
     private final TextArea m_logContent;
@@ -49,5 +53,14 @@ public class LogWindow extends AbstractWindow implements LogChangeListener
     @Override
     public void onLogChanged() {
         EventQueue.invokeLater(this::updateLogContent);
+    }
+
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        if("changeLocale".equals(evt.getPropertyName())){
+            ResourceBundle bundle = (ResourceBundle)evt.getNewValue();
+            setTitle(bundle.getString("LogsWindow"));
+        }
     }
 }

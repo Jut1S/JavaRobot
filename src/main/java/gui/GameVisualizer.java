@@ -13,6 +13,7 @@ import javax.swing.JPanel;
 import model.Robot;
 import model.RobotsLogic;
 import model.Target;
+import java.util.ResourceBundle;
 
 public class GameVisualizer extends JPanel {
 
@@ -87,4 +88,6 @@ public class GameVisualizer extends JPanel {
         g.setColor(Color.BLACK);
         drawOval(g, (int) target.getPosition().getX(), (int) target.getPosition().getY(), 5, 5);
     }
+
+
 }
