@@ -253,7 +253,10 @@ public class MainApplicationFrame extends JFrame {
         return languageMenu;
     }
 
-
+    /**
+     * Метод для изменения локали приложения и обновления интерфейса в соответствии с новой локалью.
+     * @param locale Новая локаль, которая будет установлена.
+     */
     private void changeLocale(Locale locale){
         // Устанавливаем новую локаль
         Locale = locale;
@@ -265,7 +268,12 @@ public class MainApplicationFrame extends JFrame {
         updateUIComponents(messages);
     }
 
+    /**
+     * Метод для обновления текстовых компонентов интерфейса приложения на основе переданного ResourceBundle.
+     * @param bundle ResourceBundle, содержащий ресурсы для текущей локали.
+     */
     private void updateUIComponents(ResourceBundle bundle) {
+        //Уведомляет всех слушателей о изменении локали и передает новый объект ResourceBundle.
         support.firePropertyChange("changeLocale", null, bundle);
 
         JMenuBar jMenuBar = getJMenuBar();
