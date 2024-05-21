@@ -4,17 +4,17 @@ import java.awt.*;
 import java.awt.event.*;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.net.ResponseCache;
+import java.io.File;
 import java.util.Locale;
-import java.util.Properties;
 import java.util.ResourceBundle;
 import javax.swing.*;
-
 import State.AbstractWindow;
 import log.Logger;
-
 import model.RobotsLogic;
-import gui.GameWindow;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+
 
 /**
  * Главное окно приложения, содержащее панель рабочего стола и меню.
@@ -24,7 +24,7 @@ public class MainApplicationFrame extends JFrame {
     /**
      * Текущая локаль для локализации сообщений.
      */
-    private Locale Locale = new Locale("en");
+    private Locale Locale = new Locale("ru");
 
 
     /**
@@ -163,12 +163,44 @@ public class MainApplicationFrame extends JFrame {
             addWindow(window, 300, 200);
         }));
 
+        menu.add(createMenuItem(messages.getString("LoadRobot"), KeyEvent.VK_O, KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.ALT_MASK), (event) -> {
+            loadRobot();
+        }));
+
 
         menu.add(exit());
 
 
 
         return menu;
+    }
+
+    /**
+     * Метод для загрузки jar файла
+     * @return Меню файлов.
+     */
+    private void loadRobot() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("JAR files", "jar"));
+        int returnValue = fileChooser.showOpenDialog(null);
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+            try {
+                URL[] urls = {((File) selectedFile).toURI().toURL()};
+                URLClassLoader classLoader = new URLClassLoader(urls);
+
+                Class<?> robotLogicClass = classLoader.loadClass("model.RobotsLogic");
+                Class<?> robotVisualizerClass = classLoader.loadClass("gui.GameVisualizer");
+
+                RobotsLogic customLogic = (RobotsLogic) robotLogicClass.getDeclaredConstructor().newInstance();
+                JPanel visualizer = (JPanel) robotVisualizerClass.getDeclaredConstructor(RobotsLogic.class).newInstance(customLogic);
+
+                addWindow(new GameWindow(customLogic), 400, 400);
+            } catch (Exception e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Error loading robot classes: " + e.getMessage());
+            }
+        }
     }
 
     /**
@@ -283,11 +315,12 @@ public class MainApplicationFrame extends JFrame {
             menuItem.getItem(0).setText(bundle.getString("NewGameWindow"));
             menuItem.getItem(1).setText(bundle.getString("LogsWindow"));
             menuItem.getItem(2).setText(bundle.getString("Coordinates"));
-            menuItem.getItem(3).setText(bundle.getString("Exit"));
+            menuItem.getItem(3).setText(bundle.getString("LoadRobot"));
+            menuItem.getItem(4).setText(bundle.getString("Exit"));
+
 
 
         }
-
         {
             JMenu menuItem = jMenuBar.getMenu(1);
             menuItem.setText(bundle.getString("DisplayMode"));
